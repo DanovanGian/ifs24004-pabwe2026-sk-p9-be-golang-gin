@@ -92,6 +92,13 @@ func (s *Service) UpdateProfile(id uint, req UpdateProfileRequest) (*User, error
 	if req.Email != "" {
 		user.Email = req.Email
 	}
+	taken, err := s.repo.ExistsOther(user.ID, user.Username, user.Email)
+	if err != nil {
+		return nil, err
+	}
+	if taken {
+		return nil, ErrUserExists
+	}
 	if req.Password != "" {
 		hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 		if err != nil {

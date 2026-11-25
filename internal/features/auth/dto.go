@@ -12,9 +12,9 @@ type LoginRequest struct {
 }
 
 type UpdateProfileRequest struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Username string `json:"username" binding:"omitempty,min=3"`
+	Email    string `json:"email" binding:"omitempty,email"`
+	Password string `json:"password" binding:"omitempty,min=4"`
 }
 
 type LoginResponse struct {

@@ -26,6 +26,15 @@ func (r *Repository) FindByUsername(username string) (*User, error) {
 	return &u, nil
 }
 
+// ExistsOther memeriksa apakah username/email dipakai pengguna lain (bukan id).
+func (r *Repository) ExistsOther(id uint, username, email string) (bool, error) {
+	var n int64
+	err := r.db.Model(&User{}).
+		Where("id <> ? AND (username = ? OR email = ?)", id, username, email).
+		Count(&n).Error
+	return n > 0, err
+}
+
 func (r *Repository) Exists(username, email string) (bool, error) {
 	var n int64
 	err := r.db.Model(&User{}).Where("username = ? OR email = ?", username, email).Count(&n).Error
