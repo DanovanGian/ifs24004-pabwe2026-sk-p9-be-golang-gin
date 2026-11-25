@@ -20,7 +20,7 @@ import (
 
 func NewRouter(db *gorm.DB, cfg *config.Config) *gin.Engine {
 	r := gin.New()
-	r.Use(gin.Recovery(), middleware.CORS(), middleware.RateLimiter(300, time.Minute))
+	r.Use(gin.Recovery(), middleware.CORS(), middleware.RateLimiter(100000, time.Minute))
 
 	hc := &http.Client{Timeout: 60 * time.Second}
 	authH := auth.NewHandler(auth.NewService(auth.NewRepository(db), cfg.AppKey))
