@@ -19,6 +19,10 @@ func handleErr(c *gin.Context, err error) {
 		response.Fail(c, http.StatusNotFound, err.Error())
 		return
 	}
+	if errors.Is(err, ErrForbidden) {
+		response.Fail(c, http.StatusForbidden, err.Error())
+		return
+	}
 	response.Error(c, http.StatusInternalServerError, "Terjadi kesalahan pada server")
 }
 

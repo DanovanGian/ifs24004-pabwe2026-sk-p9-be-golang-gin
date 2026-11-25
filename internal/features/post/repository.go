@@ -45,8 +45,13 @@ func (r *Repository) ListAll() ([]Post, error) {
 
 func (r *Repository) FindOwned(id, userID uint) (*Post, error) {
 	var p Post
-	err := r.db.Where("id = ? AND user_id = ?", id, userID).First(&p).Error
-	return &p, err
+	if err := r.db.First(&p, id).Error; err != nil {
+		return &p, err
+	}
+	if p.UserID != userID {
+		return &p, ErrForbidden
+	}
+	return &p, nil
 }
 
 func (r *Repository) Create(p *Post) error {

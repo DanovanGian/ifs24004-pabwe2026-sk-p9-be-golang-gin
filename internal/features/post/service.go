@@ -14,6 +14,8 @@ var Categories = []string{"Teknologi", "Pendidikan", "Gaya Hidup", "Bisnis", "Op
 
 var ErrNotFound = errors.New("artikel tidak ditemukan")
 
+var ErrForbidden = errors.New("anda tidak berhak mengakses artikel ini")
+
 var nonAlnum = regexp.MustCompile(`[^a-z0-9]+`)
 
 func Slugify(s string) string {
@@ -129,6 +131,9 @@ func (s *Service) Toggle(id, userID uint) (*Post, error) {
 }
 
 func (s *Service) Delete(id, userID uint) error {
+	if _, err := s.repo.FindOwned(id, userID); err != nil {
+		return mapErr(err)
+	}
 	rows, err := s.repo.Delete(id, userID)
 	if err != nil {
 		return err
